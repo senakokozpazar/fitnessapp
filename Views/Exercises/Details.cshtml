@@ -1,0 +1,13 @@
+﻿@model FitnessApp.Models.Exercise
+
+<h2>@Model.ExerciseName Detayı</h2>
+
+<div class="card mx-auto shadow-sm rounded-4" style="max-width: 600px;">
+    <img src="https://source.unsplash.com/featured/?exercise,workout,@Model.Id" class="card-img-top rounded-top-4" alt="@Model.ExerciseName" style="height: 300px; object-fit: cover;" />
+    <div class="card-body">
+        <p><strong>Kullanıcı ID:</strong> @Model.UserId</p>
+        <p><strong>Süre:</strong> @Model.DurationMinutes dakika</p>
+        <p><strong>Tarih:</strong> @Model.ExerciseDate.ToShortDateString()</p>
+        <a href="@Url.Action("Index", "Exercises")" class="btn btn-primary mt-3">Geri Dön</a>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+﻿@model List<FitnessApp.Models.Exercise>
+<!-- Hero alanı -->
+<div class="p-5 text-center bg-image" style="background-image: url('/img/hero.png'); height: 500px; background-size: cover; background-position: center;">
+    <div class="mask" style="background-color: rgba(0,0,0,0.6);">
+        <div class="d-flex justify-content-center align-items-center h-250">
+            <div class="text-white mb-5">
+                <h1 class="mb-3">FitnessApp'e Hoş Geldin!</h1>
+                <h5 class="mb-4">Formda kal, güçlü yaşa 💪</h5>
+                <a class="btn btn-outline-light btn-lg" href="@Url.Action("Add", "Exercises")" role="button">Egzersiz Ekle</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Egzersiz Kartları -->
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Son Egzersizler</h2>
+
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        @foreach (var item in Model)
+            {
+                string imageFile = item.ExerciseName switch
+                {
+                    "Push Up" => "pushup.jpg",
+                    "Squat" => "squat.jpg",
+                    "Plank" => "plank.png",
+                    "Jumping Jacks" => "jumpingjacks.jpg",
+                    _ => "default.jpg"
+                };
+
+                string imagePath = Url.Content($"~/img/{imageFile}");
+            <div class="col">
+                <a href="@Url.Action("Details", "Exercises", new { id = item.Id })" class="text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm rounded-4">
+                        <img src="@imagePath"
+                             class="card-img-top rounded-top-4"
+                             alt="@item.ExerciseName"
+                             style="height:180px; object-fit: cover;" />
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@item.ExerciseName</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Bilgilendirici Bölüm -->
+<div class="container mt-5">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <i class="bi bi-fire fs-1 text-danger"></i>
+            <h5 class="mt-3">Kalori Yak</h5>
+            <p>Her gün sadece 15 dakikanı ayırarak metabolizmanı hızlandır.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-heart-pulse fs-1 text-primary"></i>
+            <h5 class="mt-3">Sağlıklı Kal</h5>
+            <p>Egzersiz rutini ile daha enerjik ve dengeli bir yaşam.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-trophy fs-1 text-warning"></i>
+            <h5 class="mt-3">Hedeflerine Ulaş</h5>
+            <p>Kendine meydan oku, sonuçları uygulamada takip et.</p>
+        </div>
+    </div>
+</div>
