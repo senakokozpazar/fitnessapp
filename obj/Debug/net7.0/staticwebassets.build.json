@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "WDt68hElmBLnKH0X7QRxjVI4N3acTu1fM8qjPmup7Vs=",
+  "Hash": "NKXTzetlF5hBW2s7Y/MnQuPxTpk0Sbu1Gk3cMjFtX4w=",
   "Source": "FitnessApp",
   "BasePath": "_content/FitnessApp",
   "Mode": "Default",
@@ -100,6 +100,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/favicon.ico"
+    },
+    {
+      "Identity": "/Users/d1-19/Projects/FitnessApp/FitnessApp/wwwroot/img/.DS_Store",
+      "SourceId": "FitnessApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/d1-19/Projects/FitnessApp/FitnessApp/wwwroot/",
+      "BasePath": "_content/FitnessApp",
+      "RelativePath": "img/.DS_Store",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/img/.DS_Store"
     },
     {
       "Identity": "/Users/d1-19/Projects/FitnessApp/FitnessApp/wwwroot/img/hero.png",

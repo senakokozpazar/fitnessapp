@@ -17,6 +17,10 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
+      "Id": "/Users/d1-19/Projects/FitnessApp/FitnessApp/wwwroot/img/.DS_Store",
+      "PackagePath": "staticwebassets/img/.DS_Store"
+    },
+    {
       "Id": "/Users/d1-19/Projects/FitnessApp/FitnessApp/wwwroot/img/hero.png",
       "PackagePath": "staticwebassets/img/hero.png"
     },

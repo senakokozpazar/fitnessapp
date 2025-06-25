@@ -13,11 +13,15 @@ namespace FitnessApp.Controllers
     public class ExercisesController : Controller
     {
         // GET: /<controller>/
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
-            var data = DP.Listeleme<Exercise>("sp_GetExercises");
-            return View(data);
+            DynamicParameters param = new DynamicParameters();
+            param.Add("@Search", string.IsNullOrEmpty(search) ? null : search);
+
+            var exercises = DP.Listeleme<Exercise>("sp_GetExercises", param);
+            return View(exercises);
         }
+
 
 
         [HttpGet]

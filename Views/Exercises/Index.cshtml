@@ -1,19 +1,162 @@
-﻿@model IEnumerable<FitnessApp.Models.Exercise>
+﻿@model List<FitnessApp.Models.Exercise>
 
-<h2>Egzersizler</h2>
+@{
+    ViewData["Title"] = "Egzersizler";
+    var summary = ViewBag.Summary as FitnessApp.Models.ExerciseSummary;
+}
 
-<div class="row row-cols-1 row-cols-md-4 g-4">
-    @foreach (var item in Model)
-    {
-        <div class="col">
-            <a href="@Url.Action("Details", "Exercises", new { id = item.Id })" class="text-decoration-none text-dark">
-                <div class="card h-100 shadow-sm rounded-4">
-                    <img src="https://source.unsplash.com/featured/?exercise,workout,@item.Id" class="card-img-top rounded-top-4" alt="@item.ExerciseName" style="height:180px; object-fit: cover;" />
-                    <div class="card-body text-center">
+<div class="container my-5">
+    <h2 class="text-center mb-4">Egzersiz Paneli</h2>
+
+    <!-- İstatistik Paneli -->
+    <div class="row mb-4 text-center">
+        <div class="col-md-4">
+            <div class="bg-white shadow-sm rounded-4 p-4">
+                <i class="bi bi-graph-up-arrow fs-3 text-primary"></i>
+                <h5 class="mt-2">Toplam Egzersiz</h5>
+                <p class="fs-4 fw-bold">@summary?.TotalExercises ?? 0</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-white shadow-sm rounded-4 p-4">
+                <i class="bi bi-clock fs-3 text-success"></i>
+                <h5 class="mt-2">Toplam Süre</h5>
+                <p class="fs-4 fw-bold">@summary?.TotalDuration ?? 0 dk</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-white shadow-sm rounded-4 p-4">
+                <i class="bi bi-calendar-event fs-3 text-warning"></i>
+                <h5 class="mt-2">Son Egzersiz</h5>
+                <p class="fs-5 fw-bold">
+                    @(summary?.LastExerciseDate?.ToString("dd.MM.yyyy") ?? "-")
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hedef Bilgisi -->
+    <div class="alert alert-info text-center rounded-4 mb-4">
+        💪 Bu hafta hedefin: <strong>150 dakika</strong> egzersiz yapmak.<br />
+        Şu ana kadar:
+        <strong>@(summary?.DurationLast7Days ?? 0)</strong> dk
+    </div>
+
+    <!-- Arama Kutusu -->
+    @{
+        var searchTerm = Context.Request.Query["search"];
+    }
+
+    <form class="input-group mb-4" method="get" action="/ExerciseSummary/Index">
+        <input type="text" name="search" value="@searchTerm" class="form-control" placeholder="Egzersiz ismi ara..." />
+        <button class="btn btn-outline-secondary" type="submit">
+            <i class="bi bi-search"></i>
+        </button>
+    </form>
+
+    <!-- Egzersiz Kartları -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            string imageFile = item.ExerciseName switch
+            {
+                "Push Up" => "pushup.jpg",
+                "Squat" => "squat.jpg",
+                "Plank" => "plank.png",
+                "Jumping Jacks" => "jumpingjacks.jpg",
+                _ => "default.jpg"
+            };
+
+            string imagePath = Url.Content($"~/img/{imageFile}");
+
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 rounded-4">
+                    <img src="@imagePath" class="card-img-top rounded-top-4" alt="@item.ExerciseName" style="height:160px; object-fit:cover;" />
+                    <div class="card-body">
                         <h5 class="card-title">@item.ExerciseName</h5>
+                        <p class="card-text">
+                            <strong>Süre:</strong> @item.DurationMinutes dk<br />
+                            <strong>Tarih:</strong> @item.ExerciseDate.ToString("dd.MM.yyyy")
+                        </p>
+                        <span class="badge bg-secondary">
+                            @(item.ExerciseName.Contains("Squat") ? "Kuvvet" :
+                              item.ExerciseName.Contains("Jumping") ? "Kardiyo" : "Genel")
+                        </span>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 text-end">
+                        <a href="@Url.Action("Details", "Exercises", new { id = item.Id })" class="btn btn-outline-primary btn-sm">Detaylar</a>
                     </div>
                 </div>
-            </a>
-        </div>
-    }
+            </div>
+        }
+    </div>
+
+    <!-- Grafik -->
+    <div class="my-5">
+        <h4 class="text-center mb-4">Egzersiz Süreleri Grafiği</h4>
+        <canvas id="exerciseChart"></canvas>
+    </div>
 </div>
+
+@section Styles {
+    <style>
+        body {
+            background-color: #eef1f5;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            transition: transform 0.2s ease;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .card-text {
+            font-size: 0.95rem;
+        }
+
+        .btn-outline-primary {
+            border-radius: 50px;
+        }
+
+        .alert-info {
+            font-size: 1.1rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('exerciseChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(e => e.ExerciseDate.ToString("dd.MM")))),
+                datasets: [{
+                    label: 'Süre (dk)',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(e => e.DurationMinutes))),
+                    backgroundColor: 'rgba(13, 110, 253, 0.6)',
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 10
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
